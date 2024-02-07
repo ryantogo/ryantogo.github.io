@@ -653,3 +653,38 @@ if (daylightSlider)
 	setTimeout(_ => {
 		daylightSlider.setLength(135 + Math.round(($(".leaflet-control-container > .leaflet-bottom.leaflet-right").width() - 10 - $(daylightSlider._container).outerWidth())*10)/10);
 	});
+
+// Assuming 'map' is your Leaflet map instance
+document.addEventListener("DOMContentLoaded", function() {
+    // Add drawing tools to the map
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    // Initialize the draw control and pass it the FeatureGroup of editable layers
+    var drawControl = new L.Control.Draw({
+        edit: {
+            featureGroup: drawnItems,
+            poly: {
+                allowIntersection: false
+            }
+        },
+        draw: {
+            polygon: false, // Disables the ability to draw polygons
+            circle: true, // Disables the ability to draw circles
+            circlemarker: false, // Disables the ability to draw circle markers
+            rectangle: false, // Disables the ability to draw rectangles
+            marker: true, // Disables the ability to place markers
+            polyline: true // Enables the ability to draw polylines
+        }
+    });
+    map.addControl(drawControl);
+
+    // Handle the creation of new layers
+    map.on(L.Draw.Event.CREATED, function(event) {
+        var layer = event.layer;
+
+        // Do whatever you want with the layer.
+        // For example, you can add it to the map
+        drawnItems.addLayer(layer);
+    });
+});
